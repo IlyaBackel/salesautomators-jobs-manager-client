@@ -1,73 +1,50 @@
-# React + TypeScript + Vite
+# Job Manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Стек технологий
 
-Currently, two official plugins are available:
+- React
+- TypeScript
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Используемые библиотеки
 
-## React Compiler
+- Axios
+- Tailwind CSS
+- HotToast
+- React Hook Form
+- React Router
+- Zod
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Запуск
 
-## Expanding the ESLint configuration
+npm i
+npm run dev
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Архитектура
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Я использовал Feature-Sliced Design (FSD) для организации кода фронтенда, чтобы чётко разделить логику, UI и бизнес-сущности, что упрощает масштабирование и поддержку проекта.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Как работает процесс
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Лиды – список из 8 фиктивных заявок.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Создание задания – менеджер заполняет форму (данные клиента, детали, адрес, расписание). Поля имени, телефона, адреса и т.д. обязательны.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+После сохранения:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Задание сохраняется в server/data/jobs.json со статусом Job Created.
+
+Отправляется сообщение в Slack и добавляется строка в Google Sheets.
+
+Статусы – менеджер меняет статус на странице Jobs или на детальной странице.
+
+При смене статуса отправляется новое уведомление в Slack, обновляется строка в таблице.
+
+При статусе Completed клиенту приходит email.
+
+При статусе Cancelled появляется модальное окно для указания причины (сохраняется в задании и отправляется в Slack/таблицу).
+
+Журнал событий – бэкенд логирует все действия в файл logs/job-events.log.
+
+## Использование ИИ
+
+Для ускорения разработки и быстрого освоения незнакомых инструментов я использовал ChatGPT и GitHub Copilot.
