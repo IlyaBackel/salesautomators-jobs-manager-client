@@ -10,7 +10,7 @@ interface Props {
   onStatusChange: (newStatus: string) => void;
 }
 
-export const StatusSelect: React.FC<Props> = ({ jobId, currentStatus, onStatusChange }) => {
+export default function StatusSelect({ jobId, currentStatus, onStatusChange }: Props) {
   const [status, setStatus] = useState(currentStatus);
   const [loading, setLoading] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
