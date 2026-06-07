@@ -1,23 +1,40 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../../../shared/ui/Button';
+import { mockLeads, type Lead } from '../../../shared/lib/mockLeads';
+import { LeadCard } from '../../../entities/lead/ui/LeadCard';
 import JobFormModal from '../../../features/create-job';
 
 export default function LeadsPage() {
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
 
+  const handleCreateJob = (lead: Lead) => {
+    setSelectedLead(lead);
+    setModalOpen(true);
+  };
+
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Leads</h1>
-      <div className="border rounded-lg p-4 shadow-sm mb-4">
-        <h2 className="text-xl font-semibold">Test Lead: Alex Johnson</h2>
-        <p className="text-gray-600">Phone: +1 234 567 8900</p>
-        <p className="text-gray-600">Problem: Leaking pipe in kitchen</p>
-        <Button className="mt-2" onClick={() => setModalOpen(true)}>Create Job</Button>
+    <div className="p-8 max-w-5xl mx-auto">
+      <h1 className="text-3xl font-bold mb-8 text-gray-900">Leads</h1>
+      <div className="flex flex-col gap-8">
+        {mockLeads.map(lead => (
+          <LeadCard key={lead.id} lead={lead} onCreateJob={handleCreateJob} />
+        ))}
       </div>
-      <Button variant="secondary" onClick={() => navigate('/jobs')}>View All Jobs</Button>
-      <JobFormModal open={modalOpen} onClose={() => setModalOpen(false)} onSuccess={() => navigate('/jobs')} />
+      <JobFormModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSuccess={() => navigate('/jobs')}
+        initialData={selectedLead ? {
+          firstName: selectedLead.firstName,
+          lastName: selectedLead.lastName,
+          phone: selectedLead.phone,
+          email: selectedLead.email || '',
+          address: selectedLead.address,
+          city: selectedLead.city,
+        } : undefined}
+      />
     </div>
   );
 }

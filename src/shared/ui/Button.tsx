@@ -11,7 +11,7 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const base = 'px-4 py-2 rounded font-semibold transition disabled:opacity-50';
+  const base = 'px-6 py-3 rounded-lg font-semibold transition disabled:opacity-50 text-base';
   const variants = {
     primary: 'bg-blue-600 text-white hover:bg-blue-700',
     secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300',

@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
-import { api } from '../../../shared/api/axios';
-import { Button } from '../../../shared/ui/Button';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../../../shared/api/axios';
 import type { Job } from '../../../entities/job/model/types';
-import StatusSelect from '../../../features/update-job-status';
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -11,48 +9,49 @@ export default function JobsPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-  const fetchJobs = async () => {
-    try {
-      const { data } = await api.get('/jobs');
-      setJobs(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-  fetchJobs();
-}, []);
+    const fetchJobs = async () => {
+      try {
+        const { data } = await api.get('/jobs');
+        setJobs(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchJobs();
+  }, []);
 
-  const updateJobStatus = (id: number, newStatus: string) => {
-    setJobs(prev => prev.map(job => job.id === id ? { ...job, status: newStatus } : job));
-  };
+  if (loading) return <div className="p-8 text-center text-gray-500 text-lg">Loading jobs...</div>;
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Jobs</h1>
-        <Button variant="secondary" onClick={() => navigate('/leads')}>Back to Leads</Button>
+    <div className="p-8 max-w-6xl mx-auto">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Jobs</h1>
       </div>
-      {loading ? (
-        <p>Loading...</p>
-      ) : jobs.length === 0 ? (
-        <p>No jobs found. Create one from leads.</p>
+      {jobs.length === 0 ? (
+        <p className="text-center text-gray-500 text-lg">No jobs yet. Create one from leads.</p>
       ) : (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-8">
           {jobs.map(job => (
-            <div key={job.id} className="border rounded-lg p-4 shadow-sm">
-              <div className="flex justify-between items-start flex-wrap gap-2">
+            <div
+              key={job.id}
+              onClick={() => navigate(`/jobs/${job.id}`)}
+              className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200 hover:shadow-xl cursor-pointer transition-all duration-200"
+            >
+              <div className="flex flex-wrap justify-between items-start gap-4">
                 <div>
-                  <h3 className="font-bold">{job.firstName} {job.lastName}</h3>
-                  <p className="text-sm text-gray-600">Phone: {job.phone}</p>
-                  <p className="text-sm text-gray-600">Job: {job.jobType} | {job.address}, {job.city}</p>
-                  <p className="text-sm text-gray-600">Scheduled: {job.startDate} {job.startTime} - {job.endTime}</p>
-                  {job.cancellationReason && <p className="text-sm text-red-500">Reason: {job.cancellationReason}</p>}
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                    {job.firstName} {job.lastName}
+                  </h3>
+                  <p className="text-lg text-gray-700 mb-1"><span className="font-semibold">Job Type:</span> {job.jobType}</p>
+                  <p className="text-lg text-gray-700 mb-1"><span className="font-semibold">Address:</span> {job.address}, {job.city}</p>
+                  <p className="text-lg text-gray-700 mb-1"><span className="font-semibold">Date:</span> {job.startDate}</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium">Status:</span>
-                  <StatusSelect jobId={job.id} currentStatus={job.status} onStatusChange={(newStatus) => updateJobStatus(job.id, newStatus)} />
+                <div className="mt-2">
+                  <span className="inline-block px-4 py-2 bg-gray-100 text-gray-800 text-base font-medium rounded-full">
+                    Status: {job.status}
+                  </span>
                 </div>
               </div>
             </div>

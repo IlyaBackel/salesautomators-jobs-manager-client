@@ -21,6 +21,5 @@ export const STATUSES = [
   'Scheduled',
   'In Progress',
   'Completed',
-  'Lost',
   'Cancelled',
 ];

@@ -8,12 +8,12 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   ({ label, options, error, className = '', ...props }, ref) => (
-    <div className="mb-4">
-      {label && <label className="block text-sm font-medium mb-1">{label}</label>}
+    <div className="mb-5">
+      {label && <label className="block text-base font-medium mb-2 text-gray-800">{label}</label>}
       <select
         ref={ref}
-        className={`w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-          error ? 'border-red-500' : 'border-gray-300'
+        className={`w-full px-4 py-3 text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+          error ? 'border-red-500' : 'border-gray-600'
         } ${className}`}
         {...props}
       >
@@ -22,7 +22,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           <option key={opt.value} value={opt.value}>{opt.label}</option>
         ))}
       </select>
-      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
     </div>
   )
 );
